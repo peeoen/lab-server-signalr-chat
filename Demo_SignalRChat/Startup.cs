@@ -28,9 +28,22 @@ namespace Demo_SignalRChat
             });
 
 
+
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins("http://localhost:4200")
+                    .DisallowCredentials();
+            }));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+
+
             //services.AddSignalR().AddMessagePackProtocol();
             services.AddSignalR();
+       
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +62,11 @@ namespace Demo_SignalRChat
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseCors(builder => builder
+.AllowAnyOrigin()
+.AllowAnyMethod()
+.AllowAnyHeader()
+.AllowCredentials());
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chatHub");
